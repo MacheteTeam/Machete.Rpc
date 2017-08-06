@@ -20,5 +20,15 @@ namespace Machete.Rpc.Sample.Implement
         {
             return name + ":" + content;
         }
+
+        public string Hello(int age)
+        {
+            return "int:" + age;
+        }
+
+        public string Hello(double age)
+        {
+            return "double:" + age;
+        }
     }
 }

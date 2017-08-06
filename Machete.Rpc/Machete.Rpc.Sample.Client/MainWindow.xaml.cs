@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DXY.Rpc.Proxy;
 using Machete.Rpc.Proxy;
 using Machete.Rpc.Sample.Service;
 
@@ -42,6 +41,15 @@ namespace Machete.Rpc.Sample.Client
             IChatService chatService = InterfaceProxy.Resolve<IChatService>();
             string result = chatService.Hi("李四", "世界和平");
             MessageBox.Show(result);
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            IChatService chatService = InterfaceProxy.Resolve<IChatService>();
+            string result = chatService.Hello(1);
+            string result1 = chatService.Hello(1.2);
+            MessageBox.Show(result);
+            MessageBox.Show(result1);
         }
     }
 }

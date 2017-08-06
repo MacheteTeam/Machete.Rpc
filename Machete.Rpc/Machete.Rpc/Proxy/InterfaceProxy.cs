@@ -8,14 +8,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using Machete.Rpc.Proxy;
 
-namespace DXY.Rpc.Proxy
+namespace Machete.Rpc.Proxy
 {
     /// <summary>
     /// 动态接口代理

@@ -21,5 +21,9 @@ namespace Machete.Rpc.Sample.Service
         string Hi(string name);
 
         string Hi(string name, string content);
+
+        string Hello(int age);
+
+        string Hello(double age);
     }
 }

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using DXY.Rpc;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
+using Machete.Rpc.Models;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc.Proxy
@@ -25,14 +26,17 @@ namespace Machete.Rpc.Proxy
         {
             MethodInfo met = (MethodInfo)typeof(T).Module.ResolveMethod(rid);
             List<string> parameterList = new List<string>();
+            List<string> parameterTypeList = new List<string>();
             string result;
             foreach (var arg in args)
             {
                 parameterList.Add(JsonConvert.SerializeObject(arg));
+                parameterTypeList.Add(arg.GetType().FullName);
             }
             string[] statements = statement.Split('+');
             string parameter = JsonConvert.SerializeObject(parameterList);
-            RpcRequest request = RpcRequest.BuildRequest(statements[0], statements[1], parameter);
+            string parameterType = JsonConvert.SerializeObject(parameterTypeList);
+            RpcRequest request = RpcRequest.BuildRequest(statements[0], statements[1], parameter, parameterType);
 
             if (statements.Length != 2)
             {

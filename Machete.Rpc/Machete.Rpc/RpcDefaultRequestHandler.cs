@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using DXY.Rpc;
 using DXY.Rpc.Models;
+using Machete.Rpc.Models;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc
@@ -27,71 +28,48 @@ namespace Machete.Rpc
             if (flag)
             {
                 List<string> requestParamList = JsonConvert.DeserializeObject<List<string>>(request.Parameter);
-
-                List<MethodInfo> methodInfos = obj.GetType().GetMethods().Where(x => x.Name == request.Method).ToList();
-
-                List<object> parameters = new List<object>();
-
-                if (methodInfos.Count == 0)
+                List<string> requestParamTypeList = JsonConvert.DeserializeObject<List<string>>(request.ParameterType);
+                List<Type> types = new List<Type>();
+                try
                 {
-                    response.Message = "没有可调用的方法";
-                    return response;
-                }
-                if (methodInfos.Count == 1)
-                {
-                    var methodInfo = methodInfos.First();
-                    ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+                    foreach (var paramType in requestParamTypeList)
+                    {
+                        Type type = Type.GetType(paramType);
+                        types.Add(type);
+                    }
+
+                    MethodInfo method = obj.GetType().GetMethod(request.Method, types.ToArray());
+
+                    if (method == null)
+                    {
+                        response.Code = 2;
+                        response.Message = "请求方法不存在";
+                        return response;
+                    }
+
+                    List<object> parameters = new List<object>();
+                    ParameterInfo[] parameterInfos = method.GetParameters();
                     for (int i = 0; i < parameterInfos.Length; i++)
                     {
                         ParameterInfo parameterInfo = parameterInfos[i];
                         Type type = parameterInfo.ParameterType;
                         parameters.Add(JsonConvert.DeserializeObject(requestParamList[i], type));
                     }
-                    // var attributes = methodInfo.GetCustomAttributes();
-                    var result = methodInfo.Invoke(obj, parameters.ToArray());
+
+                    var result = method.Invoke(obj, parameters.ToArray());
                     response.Code = 0;
                     response.Message = "成功";
                     response.Response = JsonConvert.SerializeObject(result);
                     return response;
                 }
-                if (methodInfos.Count > 1)
+                catch (Exception e)
                 {
-                    foreach (var methodInfo in methodInfos)
-                    {
-                        bool match = true;
-                        ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-                        if (parameterInfos.Length != requestParamList.Count)
-                        {
-                            continue;
-                        }
-                        for (int i = 0; i < parameterInfos.Length; i++)
-                        {
-                            string paramterValue = requestParamList[i];
-                            ParameterInfo parameterInfo = parameterInfos[i];
-                            Type type = parameterInfo.ParameterType;
-                            try
-                            {
-                                JsonConvert.DeserializeObject(paramterValue, type);
-                            }
-                            catch
-                            {
-                                match = false;
-                                break;
-                            }
-                            parameters.Add(JsonConvert.DeserializeObject(requestParamList[i], type));
-                        }
-                        if (match)
-                        {
-                            //var attributes = methodInfo.GetCustomAttributes();
-                            var result = methodInfo.Invoke(obj, parameters.ToArray());
-                            response.Code = 0;
-                            response.Message = "成功";
-                            response.Response = JsonConvert.SerializeObject(result);
-                            return response;
-                        }
-                    }
+                    response.Code = -1;
+                    response.Message = e.Message;
+                    return response;
                 }
             }
+            response.Message = "未找到远程接口服务";
             return response;
         }
     }

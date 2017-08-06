@@ -13,6 +13,7 @@ using DXY.Rpc;
 using DXY.Rpc.Helpers;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
+using Machete.Rpc.Models;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc

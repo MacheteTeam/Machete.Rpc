@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using DXY.Rpc;
 using DXY.Rpc.Helpers;
 using DXY.Rpc.Models;
+using Machete.Rpc.Models;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc

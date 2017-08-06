@@ -7,6 +7,7 @@
 ******************************************************/
 
 using DXY.Rpc.Models;
+using Machete.Rpc.Models;
 
 namespace Machete.Rpc
 {

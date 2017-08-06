@@ -2,7 +2,7 @@
 * author :  Lenny
 * email  :  niel@dxy.cn 
 * function: 
-* time:	2017/8/6 15:04:27 
+* time:	2017/8/3 10:09:21 
 * clrversion :	4.0.30319.42000
 ******************************************************/
 
@@ -13,8 +13,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Machete.Rpc.Proxy;
 
-namespace Machete.Rpc.Proxy
+namespace DXY.Rpc.Proxy
 {
     /// <summary>
     /// 动态接口代理
@@ -47,6 +48,13 @@ namespace Machete.Rpc.Proxy
             {
                 return null;
             }
+            return (T)value;
+        }
+
+        public static T Resolve<T>() where T : class
+        {
+            InvocationHandler hanlder = new DefaultInvocationHandler<T>();
+            object value = New(typeof(T), hanlder);
             return (T)value;
         }
 

@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DXY.Rpc;
 using DXY.Rpc.Models;
@@ -25,27 +26,71 @@ namespace Machete.Rpc
             bool flag = RpcConatiner.ServiceContainer.TryGetValue(nameSpace, out obj);
             if (flag)
             {
-                var methodInfo = obj.GetType().GetMethod(request.Method);
-                if (methodInfo != null)
-                {
-                    List<string> requestParamList = JsonConvert.DeserializeObject<List<string>>(request.Parameter);
+                List<string> requestParamList = JsonConvert.DeserializeObject<List<string>>(request.Parameter);
 
+                List<MethodInfo> methodInfos = obj.GetType().GetMethods().Where(x => x.Name == request.Method).ToList();
+
+                List<object> parameters = new List<object>();
+
+                if (methodInfos.Count == 0)
+                {
+                    response.Message = "没有可调用的方法";
+                    return response;
+                }
+                if (methodInfos.Count == 1)
+                {
+                    var methodInfo = methodInfos.First();
                     ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-                    List<object> parameters = new List<object>();
                     for (int i = 0; i < parameterInfos.Length; i++)
                     {
                         ParameterInfo parameterInfo = parameterInfos[i];
                         Type type = parameterInfo.ParameterType;
                         parameters.Add(JsonConvert.DeserializeObject(requestParamList[i], type));
                     }
+                    // var attributes = methodInfo.GetCustomAttributes();
                     var result = methodInfo.Invoke(obj, parameters.ToArray());
                     response.Code = 0;
                     response.Message = "成功";
                     response.Response = JsonConvert.SerializeObject(result);
+                    return response;
                 }
-            }
-            {
-                response.Message = "未发现服务，请检查！";
+                if (methodInfos.Count > 1)
+                {
+                    foreach (var methodInfo in methodInfos)
+                    {
+                        bool match = true;
+                        ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+                        if (parameterInfos.Length != requestParamList.Count)
+                        {
+                            continue;
+                        }
+                        for (int i = 0; i < parameterInfos.Length; i++)
+                        {
+                            string paramterValue = requestParamList[i];
+                            ParameterInfo parameterInfo = parameterInfos[i];
+                            Type type = parameterInfo.ParameterType;
+                            try
+                            {
+                                JsonConvert.DeserializeObject(paramterValue, type);
+                            }
+                            catch
+                            {
+                                match = false;
+                                break;
+                            }
+                            parameters.Add(JsonConvert.DeserializeObject(requestParamList[i], type));
+                        }
+                        if (match)
+                        {
+                            //var attributes = methodInfo.GetCustomAttributes();
+                            var result = methodInfo.Invoke(obj, parameters.ToArray());
+                            response.Code = 0;
+                            response.Message = "成功";
+                            response.Response = JsonConvert.SerializeObject(result);
+                            return response;
+                        }
+                    }
+                }
             }
             return response;
         }

@@ -36,5 +36,12 @@ namespace Machete.Rpc.Sample.Client
 
             MessageBox.Show(result);
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            IChatService chatService = InterfaceProxy.Resolve<IChatService>();
+            string result = chatService.Hi("李四", "世界和平");
+            MessageBox.Show(result);
+        }
     }
 }

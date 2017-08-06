@@ -19,5 +19,7 @@ namespace Machete.Rpc.Sample.Service
     public interface IChatService
     {
         string Hi(string name);
+
+        string Hi(string name, string content);
     }
 }

@@ -15,5 +15,10 @@ namespace Machete.Rpc.Sample.Implement
         {
             return name + ":你好 世界";
         }
+
+        public string Hi(string name, string content)
+        {
+            return name + ":" + content;
+        }
     }
 }

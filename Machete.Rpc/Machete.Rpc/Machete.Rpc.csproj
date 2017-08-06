@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="Attributes\RpcServiceAttribute.cs" />
     <Compile Include="ClientContainer.cs" />
-    <Compile Include="Config\ClientCOnfig.cs" />
+    <Compile Include="Config\ClientConfig.cs" />
     <Compile Include="Exceptions\DeserializeException.cs" />
     <Compile Include="Exceptions\NotConnectionException.cs" />
     <Compile Include="Exceptions\NotExistException.cs" />

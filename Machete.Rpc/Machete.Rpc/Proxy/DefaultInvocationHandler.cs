@@ -27,11 +27,14 @@ namespace Machete.Rpc.Proxy
             MethodInfo met = (MethodInfo)typeof(T).Module.ResolveMethod(rid);
             List<string> parameterList = new List<string>();
             List<string> parameterTypeList = new List<string>();
+            List<ParameterInfo> parameterInfos = met.GetParameters().ToList();
             string result;
-            foreach (var arg in args)
+            for (int i = 0; i < args.Length; i++)
             {
+                var arg = args[i];
+                ParameterInfo parameterInfo = parameterInfos[i];
                 parameterList.Add(JsonConvert.SerializeObject(arg));
-                parameterTypeList.Add(arg.GetType().FullName);
+                parameterTypeList.Add(parameterInfo.ParameterType.FullName);
             }
             string[] statements = statement.Split('+');
             string parameter = JsonConvert.SerializeObject(parameterList);

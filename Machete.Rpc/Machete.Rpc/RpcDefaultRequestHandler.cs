@@ -34,7 +34,13 @@ namespace Machete.Rpc
                 {
                     foreach (var paramType in requestParamTypeList)
                     {
-                        Type type = Type.GetType(paramType);
+                        Type type = GetType(paramType);
+                        if (type == null)
+                        {
+                            response.Code = 3;
+                            response.Message = $"未加载参数方法类型{paramType}";
+                            return response;
+                        }
                         types.Add(type);
                     }
 
@@ -71,6 +77,22 @@ namespace Machete.Rpc
             }
             response.Message = "未找到远程接口服务";
             return response;
+        }
+
+
+        private Type GetType(string typeFullName)
+        {
+            //搜索当前域中已加载的程序集
+            Assembly[] asses = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly ass in asses)
+            {
+                Type type = ass.GetType(typeFullName);
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+            return null;
         }
     }
 }

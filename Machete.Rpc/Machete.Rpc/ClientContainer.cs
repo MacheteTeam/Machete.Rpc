@@ -15,9 +15,7 @@ namespace Machete.Rpc
     {
         public static TcpClient Client;
 
-        /// <summary>
-        /// 服务器端保存全部的连接
-        /// </summary>
-        public static List<TcpClient> Clients = new List<TcpClient>();
+
+        public static List<TcpClient> TcpClients = new List<TcpClient>();
     }
 }

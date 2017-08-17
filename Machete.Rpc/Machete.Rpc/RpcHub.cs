@@ -14,6 +14,7 @@ using DXY.Rpc.Helpers;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
 using Machete.Rpc.Models;
+using Machete.Rpc.Socket;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc
@@ -27,10 +28,11 @@ namespace Machete.Rpc
         public void Start(int port)
         {
             RpcConatiner.Initialize();
-            RpcNet.Handle += new RpcDefaultRequestHandler().Handle;
+            SyncTcpServer server = new SyncTcpServer();
+            server.Handle += new RpcDefaultRequestHandler().Handle;
             Task.Factory.StartNew(() =>
             {
-                RpcNet.Listen(port);
+                server.Listen(port);
             });
         }
 
@@ -48,10 +50,10 @@ namespace Machete.Rpc
                 TcpClient client = new TcpClient(host, port);
                 return client;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Log4NetHelper.WriteLog(e.StackTrace);
-                throw new NotConnectionException("连接服务器出现异常，请查看服务器状态！");
+                throw new NotConnectionException("rpc服务出现异常，请查看服务器状态！");
             }
         }
 
@@ -61,7 +63,7 @@ namespace Machete.Rpc
         public void CloseConnection()
         {
             RpcRequest request = RpcRequest.BuildCloseRequest();
-            RpcNet.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request), true); //关闭服务端链接
+            SyncTcpClient.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request), true); //关闭服务端链接
             ClientContainer.Client.Close();
         }
     }

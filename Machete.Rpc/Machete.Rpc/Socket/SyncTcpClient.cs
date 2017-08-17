@@ -2,52 +2,24 @@
 * author :  Lenny
 * email  :  niel@dxy.cn 
 * function: 
-* time:	2017/8/3 10:01:06 
+* time:	2017/8/17 22:51:46 
 * clrversion :	4.0.30319.42000
 ******************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using DXY.Rpc;
+using System.Threading.Tasks;
 
-namespace Machete.Rpc
+namespace Machete.Rpc.Socket
 {
-    public class RpcNet
+    public class SyncTcpClient
     {
-        public static Encoding Encode = Encoding.UTF8;
-
-        public static event RequestHandler Handle;
-
         /// <summary>
-        /// 监听请求
-        /// </summary>
-        /// <param name="port"></param>
-        public static void Listen(int port)
-        {
-            //[1]TcpListener对Socket进行了封装，这各类会自己创建Socket对象  
-            TcpListener tcpListener = new TcpListener(IPAddress.Any, port);
-            //[2]开始进行监听  
-            tcpListener.Start();
-            while (true)
-            {
-                //[3]等待客户端连接过来  
-                TcpClient client = tcpListener.AcceptTcpClient();
-                //创建消息服务线程对象  
-                RpcNetThread newclient = new RpcNetThread(client);
-                newclient.Handle += Handle;
-                //把RpcNetThread类的ClientService方法委托给线程  
-                Thread newthread = new Thread(newclient.ClientService);
-                //启动消息服务线程  
-                newthread.Start();
-            }
-        }
-
-        /// <summary>
-        /// 发送连接
+        /// 发送
         /// 支持中文
         /// </summary>
         /// <param name="client"></param>
@@ -69,7 +41,7 @@ namespace Machete.Rpc
                         result = br.ReadString(); //接收服务器发送的数据  
                         break;
                     }
-                    catch (Exception)
+                    catch (System.Exception)
                     {
                         throw;
                     }
@@ -77,5 +49,6 @@ namespace Machete.Rpc
             }
             return result;
         }
+
     }
 }

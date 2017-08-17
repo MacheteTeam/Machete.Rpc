@@ -66,9 +66,10 @@
     <Compile Include="RpcConatiner.cs" />
     <Compile Include="RpcDefaultRequestHandler.cs" />
     <Compile Include="RpcHub.cs" />
-    <Compile Include="RpcNet.cs" />
-    <Compile Include="RpcNetThread.cs" />
     <Compile Include="RpcRequestHandlerDelagete.cs" />
+    <Compile Include="Socket\SocketThread.cs" />
+    <Compile Include="Socket\SyncTcpClient.cs" />
+    <Compile Include="Socket\SyncTcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

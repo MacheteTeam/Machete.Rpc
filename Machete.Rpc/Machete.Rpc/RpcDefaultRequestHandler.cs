@@ -19,8 +19,9 @@ namespace Machete.Rpc
 {
     public class RpcDefaultRequestHandler : IRpcRequestHandler
     {
-        public RpcResponse Handle(RpcRequest request)
+        public string Handle(string requestData)
         {
+            RpcRequest request = JsonConvert.DeserializeObject<RpcRequest>(requestData);
             string nameSpace = request.NameSpace;
             RpcResponse response = new RpcResponse() { Code = 1, Message = "未知错误" };
             object obj;
@@ -38,8 +39,8 @@ namespace Machete.Rpc
                         if (type == null)
                         {
                             response.Code = 3;
-                            response.Message = $"未加载参数方法类型{paramType}";
-                            return response;
+                            response.Message = "未加载目标方法";
+                            return JsonConvert.SerializeObject(response);
                         }
                         types.Add(type);
                     }
@@ -50,7 +51,7 @@ namespace Machete.Rpc
                     {
                         response.Code = 2;
                         response.Message = "请求方法不存在";
-                        return response;
+                        return JsonConvert.SerializeObject(response);
                     }
 
                     List<object> parameters = new List<object>();
@@ -66,19 +67,18 @@ namespace Machete.Rpc
                     response.Code = 0;
                     response.Message = "成功";
                     response.Response = JsonConvert.SerializeObject(result);
-                    return response;
+                    return JsonConvert.SerializeObject(response);
                 }
-                catch (Exception e)
+                catch (System.Exception e)
                 {
                     response.Code = -1;
                     response.Message = e.Message;
-                    return response;
+                    return JsonConvert.SerializeObject(response);
                 }
             }
             response.Message = "未找到远程接口服务";
-            return response;
+            return JsonConvert.SerializeObject(response);
         }
-
 
         private Type GetType(string typeFullName)
         {

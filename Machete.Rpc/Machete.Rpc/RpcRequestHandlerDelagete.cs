@@ -11,5 +11,5 @@ using Machete.Rpc.Models;
 
 namespace Machete.Rpc
 {
-    public delegate RpcResponse RequestHandler(RpcRequest request);
+    public delegate string RequestHandler(string data);
 }

@@ -16,6 +16,7 @@ using DXY.Rpc;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
 using Machete.Rpc.Models;
+using Machete.Rpc.Socket;
 using Newtonsoft.Json;
 
 namespace Machete.Rpc.Proxy
@@ -48,9 +49,9 @@ namespace Machete.Rpc.Proxy
 
             try
             {
-                result = RpcNet.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request));
+                result = SyncTcpClient.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request));
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 throw new RpcRequestException("rpc调用失败，请检查服务器是否状态正常", e);
             }
@@ -60,11 +61,11 @@ namespace Machete.Rpc.Proxy
                 RpcResponse response = JsonConvert.DeserializeObject<RpcResponse>(result);
                 if (response.Code != 0)
                 {
-                    throw new Exception(response.Message);
+                    throw new System.Exception(response.Message);
                 }
                 return JsonConvert.DeserializeObject(response.Response, met.ReturnType);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 throw new DeserializeException("rpc反序列化失败", e);
             }

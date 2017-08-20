@@ -29,9 +29,15 @@ namespace Machete.Rpc.Netty
                     transportMessage.TransoprtType = TransoprtType.Ans;
                     transportMessage.Message = responseData;
                 }
-                else
+                if (transportMessage.TransoprtType == TransoprtType.Request)
                 {
                     string responseData = Handle?.Invoke(transportMessage.Message);
+                    transportMessage.TransoprtType = TransoprtType.Response;
+                    transportMessage.Message = responseData;
+                }
+                else
+                {
+                    string responseData = "不需要处理的";
                     transportMessage.TransoprtType = TransoprtType.Response;
                     transportMessage.Message = responseData;
                 }

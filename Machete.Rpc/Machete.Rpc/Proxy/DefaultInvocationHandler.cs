@@ -52,6 +52,8 @@ namespace Machete.Rpc.Proxy
             {
                 TransportMessage message = NettyContainer.Client.SendMessage(JsonConvert.SerializeObject(request));
                 result = message.Message;
+
+                // 0.1 版本采用底层socket来通信  0.1版本以后已经弃用
                 // result = SyncTcpClient.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request));
             }
             catch (System.Exception e)

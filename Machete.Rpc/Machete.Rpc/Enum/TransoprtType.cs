@@ -17,6 +17,8 @@ namespace Machete.Rpc.Enum
 
         Request = 3,
 
-        Response = 4
+        Response = 4,
+
+        Heartbeat = 5
     }
 }

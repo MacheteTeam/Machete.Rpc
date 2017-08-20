@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetty.Buffers;
+using DotNetty.Handlers.Timeout;
 using DotNetty.Transport.Channels;
 using Machete.Rpc.Enum;
 using Machete.Rpc.Proxy;
@@ -48,8 +49,6 @@ namespace Machete.Rpc.Netty
                     Receive(_message);
                 }
             }
-
-            // Task.FromResult<object>(null);  // for .NET45, emulate the functionality
         }
 
         public override void ChannelReadComplete(IChannelHandlerContext context) => context.Flush();
@@ -60,6 +59,40 @@ namespace Machete.Rpc.Netty
             context.CloseAsync();
         }
 
+        public override void UserEventTriggered(IChannelHandlerContext context, object evt)
+        {
+            if (evt is IdleStateEvent)
+            {
+                var eventState = evt as IdleStateEvent;
+                SendHeartbeatAsync(context, eventState);
+            }
+        }
+
+        /// <summary>
+        /// 发送心跳包
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public Task SendHeartbeatAsync(IChannelHandlerContext ctx, IdleStateEvent state)
+        {
+            //获取心跳包的打包内容
+            TransportMessage message = new TransportMessage()
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Message = "heartbeat",
+                TransoprtType = TransoprtType.Heartbeat,
+            };
+
+            string heartbeatStr = Newtonsoft.Json.JsonConvert.SerializeObject(message);
+
+            var heartbeatBuff = ctx.Allocator.Buffer(heartbeatStr.Length);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(heartbeatStr);
+            heartbeatBuff.WriteBytes(messageBytes);
+
+            return ctx.WriteAndFlushAsync(heartbeatBuff);
+        }
+
         /// <summary>
         /// 注册指定消息的回调任务。
         /// </summary>
@@ -67,7 +100,6 @@ namespace Machete.Rpc.Netty
         /// <returns>远程调用结果消息模型。</returns>
         public Task<TransportMessage> RegisterResultCallbackAsync(string id)
         {
-
             var task = new TaskCompletionSource<TransportMessage>();
             _resultDictionary.TryAdd(id, task);
             return task.Task;

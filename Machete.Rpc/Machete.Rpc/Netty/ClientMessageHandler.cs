@@ -20,11 +20,10 @@ namespace Machete.Rpc.Netty
 
         public static int Size = 256;
 
-        readonly IByteBuffer initialMessage;
+        readonly IByteBuffer _initialMessage;
 
         public ClientMessageHandler()
         {
-            this.initialMessage = Unpooled.Buffer(256);
             TransportMessage message = new TransportMessage()
             {
                 Id = Guid.NewGuid().ToString("N"),
@@ -32,10 +31,11 @@ namespace Machete.Rpc.Netty
                 TransoprtType = TransoprtType.Init
             };
             byte[] messageBytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(message));
-            this.initialMessage.WriteBytes(messageBytes);
+            this._initialMessage = Unpooled.Buffer(messageBytes.Length);
+            this._initialMessage.WriteBytes(messageBytes);
         }
 
-        public override void ChannelActive(IChannelHandlerContext context) => context.WriteAndFlushAsync(initialMessage);
+        public override void ChannelActive(IChannelHandlerContext context) => context.WriteAndFlushAsync(_initialMessage);
 
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
@@ -46,7 +46,7 @@ namespace Machete.Rpc.Netty
                 TransportMessage _message = Newtonsoft.Json.JsonConvert.DeserializeObject<TransportMessage>(byteBuffer.ToString(Encoding.UTF8));
                 if (_message.TransoprtType == TransoprtType.Response)
                 {
-                    Receive(_message);
+                    ResultCallback(_message);
                 }
             }
         }
@@ -105,7 +105,22 @@ namespace Machete.Rpc.Netty
             return task.Task;
         }
 
-        private void Receive(TransportMessage message)
+        /// <summary>
+        /// 清楚回调过的回调函数
+        /// </summary>
+        /// <param name="id"></param>
+        public void ClearResultCallback(string id)
+        {
+            //删除回调任务
+            TaskCompletionSource<TransportMessage> value;
+            _resultDictionary.TryRemove(id, out value);
+        }
+
+        /// <summary>
+        ///  回调
+        /// </summary>
+        /// <param name="message"></param>
+        private void ResultCallback(TransportMessage message)
         {
             TaskCompletionSource<TransportMessage> task;
             if (!_resultDictionary.TryGetValue(message.Id, out task))

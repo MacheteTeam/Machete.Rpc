@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Machete.Rpc.Netty;
 using Machete.Rpc.Proxy;
 using Machete.Rpc.Sample.Service;
 
@@ -48,6 +49,12 @@ namespace Machete.Rpc.Sample.Client
             string result1 = chatService.Hello(1.2);
             MessageBox.Show(result);
             MessageBox.Show(result1);
+        }
+
+        private void MainWindow_OnClosed(object sender, EventArgs e)
+        {
+            NettyContainer.Client.Close();
+            Environment.Exit(0);
         }
     }
 }

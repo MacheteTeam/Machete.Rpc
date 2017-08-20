@@ -14,15 +14,19 @@ namespace Machete.Rpc.Netty
 {
     public class DotNettyServer : ITransportServer
     {
+        public static IChannel BoundChannel { set; get; }
+
+        public static MultithreadEventLoopGroup BossGroup { set; get; }
+
+        public static MultithreadEventLoopGroup WorkerGroup { set; get; }
+
         public async Task Listen(int port)
         {
-            var bossGroup = new MultithreadEventLoopGroup(1);
-            var workerGroup = new MultithreadEventLoopGroup();
-            //try
-            //{
+            BossGroup = new MultithreadEventLoopGroup(1);
+            WorkerGroup = new MultithreadEventLoopGroup();
             var bootstrap = new ServerBootstrap();
             bootstrap
-                .Group(bossGroup, workerGroup)
+                .Group(BossGroup, WorkerGroup)
                 .Channel<TcpServerSocketChannel>()
                 .Option(ChannelOption.SoBacklog, 100)
                 .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
@@ -36,14 +40,17 @@ namespace Machete.Rpc.Netty
                     pipeline.AddLast(handler);
                 }));
 
-            IChannel boundChannel = await bootstrap.BindAsync(port);
+            BoundChannel = await bootstrap.BindAsync(port);
+        }
 
-            //}
-            //finally
-            //{
-            //    await bossGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
-            //    await workerGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
-            //}
+        /// <summary>
+        /// 关闭
+        /// </summary>
+        public async void Close()
+        {
+            await BoundChannel.CloseAsync();
+            await BossGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
+            await WorkerGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
         }
     }
 }

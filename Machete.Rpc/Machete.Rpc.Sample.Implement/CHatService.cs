@@ -13,7 +13,13 @@ namespace Machete.Rpc.Sample.Implement
     {
         public string Hi(string name)
         {
-            return name + ":你好 世界";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 1024 * 10; i++)
+            {
+                sb.Append("XX");
+            }
+            //return name + ":你好 世界";
+            return name + ":" + sb.ToString();
         }
 
         public string Hi(string name, string content)

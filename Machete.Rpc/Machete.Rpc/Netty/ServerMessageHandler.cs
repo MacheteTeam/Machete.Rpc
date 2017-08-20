@@ -20,7 +20,6 @@ namespace Machete.Rpc.Netty
             if (buffer != null)
             {
                 string receiveData = buffer.ToString(Encoding.UTF8);
-                Console.WriteLine(receiveData);
                 TransportMessage transportMessage =
                     Newtonsoft.Json.JsonConvert.DeserializeObject<TransportMessage>(receiveData);
                 if (transportMessage.TransoprtType == TransoprtType.Init)
@@ -43,8 +42,8 @@ namespace Machete.Rpc.Netty
                 }
 
                 string responseMessage = Newtonsoft.Json.JsonConvert.SerializeObject(transportMessage);
-                IByteBuffer byteBuffer = Unpooled.Buffer(256);
                 byte[] messageBytes = Encoding.UTF8.GetBytes(responseMessage);
+                IByteBuffer byteBuffer = Unpooled.Buffer(messageBytes.Length);
                 byteBuffer.WriteBytes(messageBytes);
                 context.WriteAndFlushAsync(byteBuffer);
             }

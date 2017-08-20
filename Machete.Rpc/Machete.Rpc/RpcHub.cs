@@ -29,10 +29,8 @@ namespace Machete.Rpc
         public async void Start(int port)
         {
             RpcConatiner.Initialize();
-            //SyncTcpServer server = new SyncTcpServer();
             DotNettyServer server = new DotNettyServer();
             await server.Listen(port);
-            // server.Handle += new RpcDefaultRequestHandler().Handle;
             await Task.Factory.StartNew(async () =>
              {
                  await server.Listen(port);

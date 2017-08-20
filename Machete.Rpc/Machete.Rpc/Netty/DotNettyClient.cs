@@ -51,6 +51,9 @@ namespace Machete.Rpc.Netty
             Channel = await bootstrap.ConnectAsync(new IPEndPoint(IPAddress.Parse(host), port));
         }
 
+        /// <summary>
+        /// 关闭
+        /// </summary>
         public async void Close()
         {
             await Channel.CloseAsync();
@@ -74,9 +77,9 @@ namespace Machete.Rpc.Netty
                 Message = message,
                 TransoprtType = TransoprtType.Request
             };
+
             //注册结果回调
             var callbackTask = ClientMessageHandler.RegisterResultCallbackAsync(transportMessage.Id);
-
 
             bool active = Channel.Active;
             if (!active)
@@ -90,6 +93,7 @@ namespace Machete.Rpc.Netty
             Channel.WriteAndFlushAsync(buffer);
 
             TransportMessage transport = callbackTask.Result;
+            ClientMessageHandler.ClearResultCallback(transport.Id);
             return transport;
         }
     }

@@ -30,9 +30,7 @@ namespace Machete.Rpc.Sample.Client
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             IChatService chatService = InterfaceProxy.Resolve<IChatService>();
-
             string result = chatService.Hi("张三");
-
             MessageBox.Show(result);
         }
 

@@ -1,7 +1,7 @@
 # Machete.Rpc
 Machete.Rpc 是一个轻量级的Rpc（远程过程调用的）框架。底层代理使用了Emit提高了效率，底层通信采用DotNetty框架以提升通信的效率。目前正在逐步完善中。
 
-###简单使用
+### 简单使用
 >目前还没有放到Nuget上，稍后放上去
 
 1.新建一个类库Machete.Rpc.Sample.Service，新建一个接口IChatService

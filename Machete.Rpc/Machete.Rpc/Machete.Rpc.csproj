@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Machete.Rpc</RootNamespace>
     <AssemblyName>Machete.Rpc</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotNetty.Buffers, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Buffers.0.3.2\lib\net45\DotNetty.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Codecs, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Codecs.0.3.2\lib\net45\DotNetty.Codecs.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Common, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Common.0.3.2\lib\net45\DotNetty.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Handlers, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Handlers.0.3.2\lib\net45\DotNetty.Handlers.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Transport, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Transport.0.3.2\lib\net45\DotNetty.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
@@ -50,6 +66,7 @@
     <Compile Include="Attributes\RpcServiceAttribute.cs" />
     <Compile Include="ClientContainer.cs" />
     <Compile Include="Config\ClientConfig.cs" />
+    <Compile Include="Enum\TransoprtType.cs" />
     <Compile Include="Exceptions\DeserializeException.cs" />
     <Compile Include="Exceptions\NotConnectionException.cs" />
     <Compile Include="Exceptions\NotExistException.cs" />
@@ -59,10 +76,16 @@
     <Compile Include="IRpcRequestHandler.cs" />
     <Compile Include="Models\RpcRequest.cs" />
     <Compile Include="Models\RpcResponse.cs" />
+    <Compile Include="Netty\ClientMessageHandler.cs" />
+    <Compile Include="Netty\DotNettyClient.cs" />
+    <Compile Include="Netty\DotNettyServer.cs" />
+    <Compile Include="Netty\NettyContainer.cs" />
+    <Compile Include="Netty\ServerMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy\DefaultInvocationHandler.cs" />
     <Compile Include="Proxy\InterfaceProxy.cs" />
     <Compile Include="Proxy\InvocationHandler.cs" />
+    <Compile Include="Netty\TransportMessage.cs" />
     <Compile Include="RpcConatiner.cs" />
     <Compile Include="RpcDefaultRequestHandler.cs" />
     <Compile Include="RpcHub.cs" />
@@ -70,9 +93,12 @@
     <Compile Include="Socket\SocketThread.cs" />
     <Compile Include="Socket\SyncTcpClient.cs" />
     <Compile Include="Socket\SyncTcpServer.cs" />
+    <Compile Include="Transport\ITransportClient.cs" />
+    <Compile Include="Transport\ITransportServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

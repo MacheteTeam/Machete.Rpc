@@ -14,6 +14,7 @@ using DXY.Rpc.Helpers;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
 using Machete.Rpc.Models;
+using Machete.Rpc.Netty;
 using Machete.Rpc.Socket;
 using Newtonsoft.Json;
 
@@ -25,15 +26,17 @@ namespace Machete.Rpc
         ///server 启动端口连接
         /// </summary>
         /// <param name="port"></param>
-        public void Start(int port)
+        public async void Start(int port)
         {
             RpcConatiner.Initialize();
-            SyncTcpServer server = new SyncTcpServer();
-            server.Handle += new RpcDefaultRequestHandler().Handle;
-            Task.Factory.StartNew(() =>
-            {
-                server.Listen(port);
-            });
+            //SyncTcpServer server = new SyncTcpServer();
+            DotNettyServer server = new DotNettyServer();
+            await server.Listen(port);
+            // server.Handle += new RpcDefaultRequestHandler().Handle;
+            await Task.Factory.StartNew(async () =>
+             {
+                 await server.Listen(port);
+             });
         }
 
 

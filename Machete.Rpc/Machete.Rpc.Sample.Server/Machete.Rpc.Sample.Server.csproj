@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Machete.Rpc.Sample.Server</RootNamespace>
     <AssemblyName>Machete.Rpc.Sample.Server</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotNetty.Buffers, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Buffers.0.3.2\lib\net45\DotNetty.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Codecs, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Codecs.0.3.2\lib\net45\DotNetty.Codecs.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Common, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Common.0.3.2\lib\net45\DotNetty.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Handlers, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Handlers.0.3.2\lib\net45\DotNetty.Handlers.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetty.Transport, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Transport.0.3.2\lib\net45\DotNetty.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -43,11 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EchoServerHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Machete.Rpc.Sample.Implement\Machete.Rpc.Sample.Implement.csproj">

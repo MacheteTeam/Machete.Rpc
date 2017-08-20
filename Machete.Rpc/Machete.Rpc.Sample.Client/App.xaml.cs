@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Machete.Rpc.Config;
+using Machete.Rpc.Netty;
 
 namespace Machete.Rpc.Sample.Client
 {
@@ -16,8 +17,9 @@ namespace Machete.Rpc.Sample.Client
     {
         public App()
         {
-            RpcHub hub = new RpcHub();
-            ClientContainer.Client = hub.Connect(ClientConfig.RpcHost, ClientConfig.RpcPort);
+            NettyContainer.Client.Connect(ClientConfig.RpcHost, ClientConfig.RpcPort);
+            //RpcHub hub = new RpcHub();
+            //ClientContainer.Client = hub.Connect(ClientConfig.RpcHost, ClientConfig.RpcPort);
         }
     }
 }

@@ -16,6 +16,7 @@ using DXY.Rpc;
 using DXY.Rpc.Models;
 using Machete.Rpc.Exceptions;
 using Machete.Rpc.Models;
+using Machete.Rpc.Netty;
 using Machete.Rpc.Socket;
 using Newtonsoft.Json;
 
@@ -49,7 +50,9 @@ namespace Machete.Rpc.Proxy
 
             try
             {
-                result = SyncTcpClient.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request));
+                TransportMessage message = NettyContainer.Client.SendMessage(JsonConvert.SerializeObject(request));
+                result = message.Message;
+                // result = SyncTcpClient.SendMessage(ClientContainer.Client, JsonConvert.SerializeObject(request));
             }
             catch (System.Exception e)
             {
